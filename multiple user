@@ -1,0 +1,247 @@
+
+// assign same task to multiple user
+router.post('/assign-task', async (req, res) => {
+    try {
+        const { taskName, description, dueDate, recipients, priority } = req.body;
+
+        // Check if recipients exist in the database
+        const recipientsExist = await User.find({ email: { $in: recipients } });
+        if (recipientsExist.length !== recipients.length) {
+            return res.status(400).json({ error: 'One or more recipients not found.' });
+        }
+
+        // Create a new task for each recipient
+        for (const recipient of recipientsExist) {
+            const task = new Task({
+                taskName,
+                description,
+                dueDate,
+                recipients: [recipient._id], // Assign recipient's MongoDB _id to the task
+                priority
+            });
+            await task.save();
+        }
+
+        res.status(201).json({ message: 'Task assigned successfully.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
+
+//db
+const taskSchema = new mongoose.Schema({
+    taskName: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    dueDate: {
+        type: Date,
+        required: true
+    },
+    recipients: [{ // Change recipient to recipients
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users'
+    }],
+    priority: {
+        type: String,
+        enum: ['Low', 'Medium', 'High'],
+        required: true
+    },
+    accepted: {
+        type: Boolean,
+        default: false // Initial set
+    },
+    progress: {
+        type: String,
+        enum: ['Not started', 'Started', 'Completed', 'More time needed', 'Almost completed'],
+        default: 'Not started'
+    }
+},{timestamps:true});
+
+
+
+
+
+
+
+  // //  Increment the task count for the recipient
+        // recipientExists.taskCount += 1;
+        //  await  recipientExists.save();
+
+
+
+           // taskCount: {
+    //     type: Number,
+    //     default: 0 // Initial value
+    // }
+
+
+
+
+    // Route to accept a task
+router.put('/accept-task/:taskId', async (req, res) => {
+    try {
+        const taskId = req.params.taskId;
+        // Find the task by taskId and update the accepted field to true
+        const updatedTask = await Task.findByIdAndUpdate(taskId, { accepted: true }, { new: true });
+      res.status(200).json({ message: 'Task accepted successfully.', task: updatedTask });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
+ // Route to reject a task
+// router.put('/reject-task/:taskId', async (req, res) => {
+//     try {
+//         const taskId = req.params.taskId;
+
+//         // Find the task by taskId and update the accepted field to false
+//         const updatedTask = await Task.findByIdAndUpdate(taskId, { accepted: false }, { new: true });
+
+//         res.status(200).json({ message: 'Task rejected successfully.', task: updatedTask });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Internal server error.' });
+//     }
+// });
+//rejecting task 
+
+// router.delete('/delete-task/:taskId', async (req, res) => {
+//     try {
+//         const taskId = req.params.taskId;
+//         // Find the task by taskId and delete it from the database
+//         const deletedTask = await Task.findByIdAndDelete(taskId);
+
+//         if (!deletedTask) {
+//             return res.status(404).json({ error: 'Task not found.' });
+//         }
+//       res.status(200).json({ message: 'Task deleted successfully.' });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Internal server error.' });
+//     }
+// });
+
+router.delete('/delete-task/:taskId', async (req, res) => {
+    try {
+        const taskId = req.params.taskId;
+        // Find the task by taskId and delete it from the database
+        const deletedTask = await Task.findByIdAndDelete(taskId);
+
+        if (!deletedTask) {
+            return res.status(404).json({ error: 'Task not found.' });
+        }
+        res.status(200).json({ message: 'Task deleted successfully.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
+
+// Route to update task progress
+// router.put('/update-progress/:taskId', async (req, res) => {
+//     try {
+//         const taskId = req.params.taskId;
+//         const { progress, notes } = req.body;
+//         // Find the task by taskId and update the progress field
+//         const updatedTask = await Task.findByIdAndUpdate(taskId, { progress, notes }, { new: true });
+
+//         res.status(200).json({ message: 'Task progress updated successfully.', task: updatedTask });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Internal server error.' });
+//     }
+// });
+router.put('/update-progress/:taskId', async (req, res) => {
+    try {
+        const taskId = req.params.taskId;
+        const { progress, notes } = req.body;
+
+        // Find the task by taskId
+        const task = await Task.findById(taskId);
+
+        // Check if the task is already completed
+        if (task.progress === 'Completed') {
+            return res.status(400).json({ error: 'Task is already completed. Progress cannot be updated.' });
+        }
+
+        // Update the progress and notes of the task
+        task.progress = progress;
+        task.notes = notes;
+
+        // Save the updated task to the database
+        await task.save();
+
+        res.status(200).json({ message: 'Task progress updated successfully.', task });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
+
+
+//complete task
+router.put('/complete-task/:taskId', async (req, res) => {
+    try {
+        const taskId = req.params.taskId;
+
+        // Find the task by taskId
+        const task = await Task.findById(taskId);
+
+        // Check if the task is already completed
+        if (task.progress === 'Completed') {
+            return res.status(400).json({ error: 'Task is already completed.' });
+        }
+
+        // Update the progress of the task to 'Completed'
+        task.progress = 'Completed';
+        
+        // Save the updated task to the database
+        await task.save();
+
+        res.status(200).json({ message: 'Task completed successfully.', task });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
+
+// router.post('/assign-task', async (req, res) => {
+//     try {
+//         // Extract task details from request body
+//         const { taskName,name, description, dueDate, recipient, priority } = req.body;
+//         // Check if recipient email exists in the database
+//         const recipientExists = await User.exists({ email: recipient });
+//         if (!recipientExists) {
+//             return res.status(400).json({ error: 'Recipient email not found.' });
+//         }
+//         // Create a new task
+//         const task = new Task({
+//             taskName,
+//             name,
+//             description,
+//             dueDate,
+//             recipient,
+//             priority
+//         });
+//         // Save the task to the database
+//       const savedTask=  await task.save();
+        
+
+//       res.status(201).json({ message: 'Task assigned successfully.',
+//             savedTask:savedTask });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Internal server error.' });
+//     }
+// });

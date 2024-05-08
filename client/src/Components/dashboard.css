@@ -1,0 +1,27 @@
+.sidebar{
+    /* background-Color:  rgb(19, 26, 3);  */
+    background-image: linear-gradient(to bottom right, #ff6f61, #ad1d36);
+    width: 200px;
+    padding: 10px;
+    padding: 10px;
+    height: 600vh;
+    display:flex;
+    flex-direction: column;
+    font-size: 25px;
+    text-transform: capitalize;
+    color: white;
+    font-weight: bold;
+    list-style-type: none;
+
+   
+    
+}
+
+.sideimage {
+    width: 100% ;
+    margin-Bottom: 30px ;
+}
+Link {
+     text-Decoration: none;
+      color:white 
+}

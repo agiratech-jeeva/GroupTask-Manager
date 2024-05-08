@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import "./header.css"
 import { NavLink } from "react-router-dom"
-import axios from "axios"
+import axios from "axios";
+import { GrGroup } from "react-icons/gr";
+
 
 const Headers = () => {
+   
     const [userdata, setUserdata] = useState({});
     console.log("response", userdata)
 
@@ -30,27 +33,29 @@ const Headers = () => {
             <header>
                 <nav>
                     <div className="left">
+                    <GrGroup />
                         <h1>Group Task Manager</h1>
                     </div>
                     <div className="right">
                         <ul>
-                            {/* <li>
+                            <li>
                                 <NavLink to="/">
                                     Home
                                 </NavLink>
-                            </li> */}
+                            </li>
                             {
                                 Object?.keys(userdata)?.length > 0 ? (
                                     <>
-                                    <li style={{color:"black",fontWeight:"bold"}}>{userdata?.displayName}</li>
-                                        {/* <li>
-                                            <NavLink to="/dashboard">
-                                                Dashboard
-                                            </NavLink>
-                                        </li> */}
+                                    <li style={{color:"black",fontWeight:"bold"}} className='name'>{userdata?.displayName}</li>
                                        
                                         <li>
                                             <img src={userdata?.image} style={{ width: "50px", borderRadius: "50%" }} alt="" />
+                                        </li>
+
+                                        <li>
+                                            <NavLink className="dashboard" to="/dashboard">
+                                                Dashboard
+                                            </NavLink>
                                         </li>
                                         <li onClick={logout}>Logout</li>
                                     </>

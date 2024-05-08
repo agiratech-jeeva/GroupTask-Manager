@@ -1,4 +1,5 @@
 .login-page .login-with-google-btn {
+    
     transition: background-color .3s, box-shadow .3s;
     cursor: pointer;
     margin-top: 20px;
@@ -35,29 +36,29 @@
     }
 
   }
-  /* body {
-    text-align: center;
-    padding-top: 2rem;
-  } */
-
-
-  /* ----------------- form style */
+ 
   @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
-  .login-page {
+  .Login-Page {     /*writen login  */
     width: 360px;
-    /* padding: 8% 0 0; */
     margin: auto;
+    
+
+    
+   
   }
-  .form {
+  .form {     /* sign up with google around box */
     position: relative;
     z-index: 1;
-    background: #FFFFFF;
+    /* background: #FFFFFF; */
+    background: linear-gradient(to bottom right, #ff6f61, #ad1d36);
     max-width: 360px;
     margin: 0 auto 100px;
     padding: 45px;
     text-align: center;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    height: 80vh;
+    
   }
   .form input {
     font-family: "Roboto", sans-serif;
@@ -69,20 +70,23 @@
     padding: 15px;
     box-sizing: border-box;
     font-size: 14px;
+  
   }
   .form button {
     font-family: "Roboto", sans-serif;
     text-transform: uppercase;
     outline: 0;
-    background: #4CAF50;
+    background-image: linear-gradient(to bottom right, #ff6f61, #ad1d36);
     width: 100%;
     border: 0;
     padding: 15px;
     color: #FFFFFF;
-    font-size: 14px;
+    font-size: 20px;
+    font-weight: 700;
     -webkit-transition: all 0.3 ease;
     transition: all 0.3 ease;
     cursor: pointer;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   }
 
   .form .message {
@@ -102,11 +106,14 @@
     z-index: 1;
     max-width: 300px;
     margin: 0 auto;
+   
+  
   }
   .container:before, .container:after {
     content: "";
     display: block;
     clear: both;
+    background-color: orange;
   }
   .container .info {
     margin: 50px auto;
@@ -130,3 +137,23 @@
   .container .info span .fa {
     color: #EF3B3A;
   }
+
+.full{
+ 
+  background-size: cover;
+  height: 100vh;
+  text-align: center;
+  padding-top: 2rem;
+  background-image: linear-gradient(to bottom right, #ff6f61, #ad1d36);
+  /* background-image: url('../Components/assets/istockphoto-1291339958-612x612-1.jpg'); */
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.image3{
+  margin-top: 16px;
+  margin-left: -40px;
+  margin-right: -40px;
+  margin-bottom: 60px;
+  width: 343px;
+  height: 492px;
+}

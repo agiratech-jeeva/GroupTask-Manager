@@ -4,7 +4,20 @@ const userSchema = new mongoose.Schema({
     googleId:String,
     displayName:String,
     email:String,
-    image:String
+    image:String,
+    list: [
+        {
+           type: mongoose.Types.ObjectId,
+           ref:"list"
+        },
+    ],
+    task:[
+        {
+            type:mongoose.Types.ObjectId,
+            ref:"task"
+        }
+    ]
+    
 },{timestamps:true});
 
 
